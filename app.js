@@ -8,7 +8,7 @@ app.engine('handlebars', handlebars({ defaultLayout: 'main' }))// Handlebars 註
 app.set('view engine', 'handlebars')// 設定使用 Handlebars 做為樣板引擎
 
 app.listen(port, () => {
-  db.sequelize.sync()
+  db.sequelize.sync() //讓models跟資料庫同步
   console.log(`Example app listening at http://localhost:${port}`)
 })
 
