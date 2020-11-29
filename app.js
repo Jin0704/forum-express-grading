@@ -3,6 +3,7 @@ const handlebars = require('express-handlebars')// 引入 handlebars
 const db = require('./models') //引入資料庫
 const bodyParser = require('body-parser')
 const flash = require('connect-flash')
+const helpers = require('./_helpers')
 const session = require('express-session')
 const passport = require('./config/passport')
 const methodOverride = require('method-override')
@@ -26,7 +27,7 @@ app.use('/upload', express.static(__dirname + '/upload'))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-  res.locals.user = req.user
+  res.locals.user = helpers.getUser(req)
   next()
 })
 
