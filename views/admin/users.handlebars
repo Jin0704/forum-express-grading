@@ -29,17 +29,7 @@
       <td>{{#if isAdmin}}admin{{else}}user{{/if}}</td>
       {{#if isAdmin}}
       <td>
-        {{!-- <button type="button" class="btn btn-link">
-          <a href="/admin/users/{{this.id}}">
-            Show
-          </a>
-        </button>
-        <button type="button" class="btn btn-link">
-          <a href="/admin/users/{{this.id}}/edit">
-            Edit
-          </a>
-        </button> --}}
-        <form action="/admin/users/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+        <form action="/admin/users/{{this.id}}?_method=PUT" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link">set as user</button>
         </form>
       </td>
