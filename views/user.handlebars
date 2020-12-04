@@ -1,0 +1,27 @@
+<br />
+<br />
+<br />
+<br />
+
+<div class="row">
+  <div class="col-md-4">
+    {{#if user.image}}
+    <img class="img-responsive center-block" src="{{user.image}}" style="width: 250px;margin-bottom: 25px;">
+    {{else}}
+    <img class="img-responsive center-block" src="https://i.imgur.com/Henzc78.png"
+      style="width: 250px;margin-bottom: 25px;">
+    {{/if}}
+
+  </div>
+  <div class="col-md-8">
+    <div class="name" style="margin-bottom: 25px;">
+      <h1>{{user.name}}</h1>
+    </div>
+    <div class="email" style="margin-bottom: 25px;">{{user.email}}</div>
+    <button type="button" class="btn btn-link">
+      <a href="/users/{{user.id}}/edit">
+        Edit
+      </a>
+    </button>
+  </div>
+</div>
