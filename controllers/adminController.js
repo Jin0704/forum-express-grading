@@ -143,15 +143,16 @@ const adminController = {
 
   getUsers: (req, res) => {
     return User.findAll({ raw: true })
-      .then(users => {
+      .then((users) => {
         return res.render('admin/users', { users: users })
       })
   },
   putUsers: (req, res) => {
     return User.findByPk(req.params.id)
       .then((user) => {
+        let toggleAdmin = user.isAdmin === false ? true : false;
         user.update({
-          isAdmin: !user.isAdmin
+          isAdmin: toggleAdmin,
         }).then((user) => {
           req.flash('success_messages', 'user was successfully to update')
           res.redirect('/admin/users')
