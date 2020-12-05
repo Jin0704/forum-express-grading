@@ -59,7 +59,11 @@ const userController = {
   editUser: (req, res) => {
     return User.findByPk(req.params.id)
       .then(user => {
-        res.render('editUser', { user: user.toJSON() })
+        if (req.user.id === Number(req.params.id)) {
+          res.render('editUser', { user: user.toJSON() })
+        } else {
+          res.render('signin')
+        }
       })
 
   },
