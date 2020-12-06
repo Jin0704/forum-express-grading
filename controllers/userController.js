@@ -5,6 +5,8 @@ const imgur = require('imgur-node-api')
 const { useFakeXMLHttpRequest } = require('sinon')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const User = db.User
+const Comment = db.Comment
+const Restaurant = db.Restaurant
 
 const defaultimage = ' https://i.imgur.com/Henzc78.png'
 
@@ -50,10 +52,33 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
+  // getUser: (req, res) => {
+  //   return User.findByPk(req.params.id)
+  //     .then(user => {
+  //       return Comment.findByPk(req.user.id)
+  //         .then(comment => {
+  //           return Restaurant.findByPk(comment.dataValues.id).then(restaurant => {
+  //             let restaurants = restaurant.dataValues
+  //             console.log(restaurants.name)
+  //             res.render('user', {
+  //               user: user.toJSON(),
+  //               comment: comment.toJSON(),
+  //               restaurant: restaurants
+  //             })
+  //           })
+  //         })
+  //     })
+  // },
   getUser: (req, res) => {
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, {
+      include: { model: Comment, include: Restaurant }
+    })
       .then(user => {
-        res.render('user', { user: user.toJSON() })
+        // console.log(user.Comments)
+        // console.log(user.Comments.Restaurant)
+        res.render('user', {
+          user: user.toJSON(),
+        })
       })
   },
   editUser: (req, res) => {

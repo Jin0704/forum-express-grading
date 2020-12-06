@@ -6,10 +6,10 @@
 <div class="row">
   <div class="col-md-4">
     {{#if user.image}}
-    <img class="img-responsive center-block" src="{{user.image}}" style="width: 250px;margin-bottom: 25px;">
+    <img class="img-responsive center-block" src="{{user.image}}"
+      style="width: 250px;height:inherit;margin-bottom: 25px;">
     {{else}}
-    <img class="img-responsive center-block" src="https://i.imgur.com/Henzc78.png"
-      style="width: 250px;margin-bottom: 25px;">
+    <img class="img-responsive center-block" src="" style="width: 250px;margin-bottom: 25px;">
     {{/if}}
 
   </div>
@@ -23,5 +23,22 @@
         Edit
       </a>
     </button>
+  </div>
+</div>
+<br />
+<br />
+<div class="container" style="border:1px solid rgb(153, 134, 130);">
+  <div class="comment" style="margin-bottom: 25px;">
+    {{user.name}} 已評論的餐廳
+  </div>
+  <div class="row" style="background-color:white;">
+    <div class="card-body">
+      {{#each user.Comments}}
+      <a href="/restaurants/{{this.Restaurant.id}}" class="rest-img d-inline-block mb-3 mr-2"
+        title="{{this.Restaurant.name}}">
+        <img src="{{this.Restaurant.image}}" alt="" class="rounded" style="width: 8rem;">
+      </a>
+      {{/each}}
+    </div>
   </div>
 </div>
