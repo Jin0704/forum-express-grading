@@ -7,6 +7,7 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const User = db.User
 const Comment = db.Comment
 const Restaurant = db.Restaurant
+const Favorite = db.Favorite
 
 const defaultimage = ' https://i.imgur.com/Henzc78.png'
 
@@ -81,17 +82,6 @@ const userController = {
         })
       })
   },
-  // editUser: (req, res) => {
-  //   return User.findByPk(req.params.id)
-  //     .then(user => {
-  //       if (req.user.id === Number(req.params.id)) {
-  //         res.render('editUser', { user: user.toJSON() })
-  //       } else {
-  //         res.render('signin')
-  //       }
-  //     })
-
-  // },
   editUser: (req, res) => {
     return User.findByPk(req.params.id)
       .then(user => {
@@ -135,6 +125,29 @@ const userController = {
           })
         })
     }
+  },
+  addFavorite: (req, res) => {
+    return Favorite.create({
+      UserId: req.user.id,
+      RestaurantId: req.params.restaurantId
+    })
+      .then((restaurant) => {
+        return res.redirect('back')
+      })
+  },
+  removeFavorite: (req, res) => {
+    return Favorite.findOne({
+      where: {
+        UserId: req.user.id,
+        RestaurantId: req.params.restaurantId
+      }
+    })
+      .then((favorite) => {
+        favorite.destroy()
+          .then((restaurant) => {
+            return res.redirect('back')
+          })
+      })
   }
 }
 module.exports = userController
