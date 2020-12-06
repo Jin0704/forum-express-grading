@@ -27,7 +27,8 @@ const restController = {
       const data = result.rows.map(r => ({
         ...r.dataValues,
         description: r.dataValues.description.substring(0, 50),
-        categoryName: r.Category.name
+        categoryName: r.Category.name,
+        isFavorited: req.user.FavoritedRestaurants.map(d => d.id).includes(r.id)
       }))
       Category.findAll({
         raw: true,
@@ -52,14 +53,19 @@ const restController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
+        { model: User, as: 'FavoriteUsers' },// 加入關聯資料
         { model: Comment, include: [User] }
       ]
     }).then(restaurant => {
       // console.log(restaurant.Comments[0].dataValues)
+      const isFavorited = restaurant.FavoriteUsers.map(d => d.id).includes(req.user.id)
       restaurant.viewCounts += 1
       restaurant.save({ field: ['viewCounts'] })
         .then(restaurant => {
-          res.render('restaurant', { restaurant: restaurant.toJSON() })
+          res.render('restaurant', {
+            restaurant: restaurant.toJSON(),
+            isFavorited: isFavorited
+          })
         })
     })
   },
