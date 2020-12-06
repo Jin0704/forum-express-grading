@@ -26,6 +26,13 @@ module.exports = (app, passport) => {
     }
     res.redirect('/signin')
   }
+  const authenticatedUser = (req, res, next) => {
+    if (helpers.ensureAuthenticated(req)) {
+      if (helpers.getUser(req).id === Number(req.params.id)) return next()
+      return res.redirect('back')
+    }
+    res.redirect('/signin')
+  }
 
   app.get('/', authenticated, (req, res) => res.redirect('/restaurants'))
   app.get('/restaurants', authenticated, restController.getRestaurants)
@@ -46,7 +53,7 @@ module.exports = (app, passport) => {
   app.delete('/admin/restaurants/:id', authenticatedAdmin, adminController.deleteRestaurant)
 
   app.get('/admin/users', authenticatedAdmin, adminComtroller.getUsers)
-  app.put('/admin/users/:id', authenticatedAdmin, adminController.putUsers)
+  app.put('/admin/users/:id/toggleAdmin', authenticatedAdmin, adminController.putUsers)
 
   app.get('/admin/categories', authenticatedAdmin, categoryController.getCategories)
   app.post('/admin/categories', authenticatedAdmin, categoryController.postCategory)
@@ -61,7 +68,9 @@ module.exports = (app, passport) => {
   app.get('/logout', userController.logout)
   app.post('/signup', userController.signUp)
   app.get('/users/:id', authenticated, userController.getUser)
-  app.get('/users/:id/edit', authenticated, userController.editUser)
-  app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+  // app.get('/users/:id/edit', authenticated, userController.editUser)
+  // app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+  app.get('/users/:id/edit', authenticatedUser, userController.editUser)
+  app.put('/users/:id', authenticatedUser, upload.single('image'), userController.putUser)
 
 }

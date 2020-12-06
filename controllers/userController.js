@@ -81,14 +81,23 @@ const userController = {
         })
       })
   },
+  // editUser: (req, res) => {
+  //   return User.findByPk(req.params.id)
+  //     .then(user => {
+  //       if (req.user.id === Number(req.params.id)) {
+  //         res.render('editUser', { user: user.toJSON() })
+  //       } else {
+  //         res.render('signin')
+  //       }
+  //     })
+
+  // },
   editUser: (req, res) => {
     return User.findByPk(req.params.id)
       .then(user => {
-        if (req.user.id === Number(req.params.id)) {
-          res.render('editUser', { user: user.toJSON() })
-        } else {
-          res.render('signin')
-        }
+
+        res.render('editUser', { user: req.user, profile: user.toJSON() })
+
       })
 
   },
@@ -122,7 +131,7 @@ const userController = {
             image: user.image
           }).then((user) => {
             req.flash('success_messages', 'User was successfully to update')
-            res.redirect(`/users/${user.id}`)
+            res.redirect(`/users/${user.id}}`)
           })
         })
     }

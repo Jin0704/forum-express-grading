@@ -56,9 +56,11 @@ const restController = {
       ]
     }).then(restaurant => {
       // console.log(restaurant.Comments[0].dataValues)
-      return res.render('restaurant', {
-        restaurant: restaurant.toJSON()
-      })
+      restaurant.viewCounts += 1
+      restaurant.save({ field: ['viewCounts'] })
+        .then(restaurant => {
+          res.render('restaurant', { restaurant: restaurant.toJSON() })
+        })
     })
   },
   getFeeds: (req, res) => {
@@ -86,7 +88,8 @@ const restController = {
   },
   getDashboard: (req, res) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category,
+      include: [
+        Category,
         { model: Comment, include: [User] }
       ]
     }).then(restaurant => {
