@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
+const helpers = require('../_helpers')
 const fs = require('fs')
 const imgur = require('imgur-node-api')
 const { useFakeXMLHttpRequest } = require('sinon')
@@ -8,6 +9,7 @@ const User = db.User
 const Comment = db.Comment
 const Restaurant = db.Restaurant
 const Favorite = db.Favorite
+const Like = db.Like
 
 const defaultimage = ' https://i.imgur.com/Henzc78.png'
 
@@ -128,7 +130,7 @@ const userController = {
   },
   addFavorite: (req, res) => {
     return Favorite.create({
-      UserId: req.user.id,
+      UserId: helpers.getUser(req).id,
       RestaurantId: req.params.restaurantId
     })
       .then((restaurant) => {
@@ -138,13 +140,36 @@ const userController = {
   removeFavorite: (req, res) => {
     return Favorite.findOne({
       where: {
-        UserId: req.user.id,
+        UserId: helpers.getUser(req).id,
         RestaurantId: req.params.restaurantId
       }
     })
       .then((favorite) => {
         favorite.destroy()
           .then((restaurant) => {
+            return res.redirect('back')
+          })
+      })
+  },
+  addLike: (req, res) => {
+    return Like.create({
+      UserId: helpers.getUser(req).id,
+      RestaurantId: req.params.restaurantId
+    })
+      .then((like) => {
+        return res.redirect('back')
+      })
+  },
+  removeLike: (req, res) => {
+    return Like.findOne({
+      where: {
+        UserId: helpers.getUser(req).id,
+        RestaurantId: req.params.restaurantId
+      }
+    })
+      .then((like) => {
+        like.destroy()
+          .then((like) => {
             return res.redirect('back')
           })
       })

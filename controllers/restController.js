@@ -1,4 +1,5 @@
 const db = require('../models')
+const helpers = require('../_helpers')
 const Restaurant = db.Restaurant
 const Category = db.Category
 const Comment = db.Comment
@@ -28,7 +29,8 @@ const restController = {
         ...r.dataValues,
         description: r.dataValues.description.substring(0, 50),
         categoryName: r.Category.name,
-        isFavorited: req.user.FavoritedRestaurants.map(d => d.id).includes(r.id)
+        isFavorited: helpers.getUser(req).FavoritedRestaurants.map(d => d.id).includes(r.id),
+        isLiked: helpers.getUser(req).RestaurantsLike.map(l => l.id).includes(r.id)
       }))
       Category.findAll({
         raw: true,
@@ -53,18 +55,22 @@ const restController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: User, as: 'FavoriteUsers' },// 加入關聯資料
+        { model: User, as: 'FavoriteUsers' },
+        { model: User, as: 'UsersLike' },
+        // 加入關聯資料
         { model: Comment, include: [User] }
       ]
     }).then(restaurant => {
       // console.log(restaurant.Comments[0].dataValues)
-      const isFavorited = restaurant.FavoriteUsers.map(d => d.id).includes(req.user.id)
+      const isFavorited = restaurant.FavoriteUsers.map(d => d.id).includes(helpers.getUser(req).id)
+      const isLiked = restaurant.UsersLike.map(l => l.id).includes(helpers.getUser(req).id)
       restaurant.viewCounts += 1
       restaurant.save({ field: ['viewCounts'] })
         .then(restaurant => {
           res.render('restaurant', {
             restaurant: restaurant.toJSON(),
-            isFavorited: isFavorited
+            isFavorited: isFavorited,
+            isLiked: isLiked
           })
         })
     })
