@@ -67,6 +67,7 @@ module.exports = (app, passport) => {
   app.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
   app.get('/logout', userController.logout)
   app.post('/signup', userController.signUp)
+  app.get('/users/top', authenticated, userController.getTopUser)
   app.get('/users/:id', authenticated, userController.getUser)
   // app.get('/users/:id/edit', authenticated, userController.editUser)
   // app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
