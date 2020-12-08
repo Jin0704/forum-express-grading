@@ -10,6 +10,7 @@ const Comment = db.Comment
 const Restaurant = db.Restaurant
 const Favorite = db.Favorite
 const Like = db.Like
+const Followship = db.Followship
 
 const defaultimage = ' https://i.imgur.com/Henzc78.png'
 
@@ -55,23 +56,6 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  // getUser: (req, res) => {
-  //   return User.findByPk(req.params.id)
-  //     .then(user => {
-  //       return Comment.findByPk(req.user.id)
-  //         .then(comment => {
-  //           return Restaurant.findByPk(comment.dataValues.id).then(restaurant => {
-  //             let restaurants = restaurant.dataValues
-  //             console.log(restaurants.name)
-  //             res.render('user', {
-  //               user: user.toJSON(),
-  //               comment: comment.toJSON(),
-  //               restaurant: restaurants
-  //             })
-  //           })
-  //         })
-  //     })
-  // },
   getUser: (req, res) => {
     return User.findByPk(req.params.id, {
       include: { model: Comment, include: Restaurant }
@@ -193,6 +177,30 @@ const userController = {
       users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
       return res.render('topUser', { users: users })
     })
+  },
+  addFollowing: (req, res) => {
+    return Followship.create({
+      followerId: req.user.id,
+      followingId: req.params.userId
+    })
+      .then((followship) => {
+        return res.redirect('back')
+      })
+  },
+
+  removeFollowing: (req, res) => {
+    return Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then((followship) => {
+        followship.destroy()
+          .then((followship) => {
+            return res.redirect('back')
+          })
+      })
   }
 }
 module.exports = userController
