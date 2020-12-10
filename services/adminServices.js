@@ -5,7 +5,6 @@ const Category = db.Category
 const fs = require('fs')
 const imgur = require('imgur-node-api')
 const user = require('../models/user')
-const { database } = require('faker')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const adminService = {
@@ -17,7 +16,13 @@ const adminService = {
     }).then(restaurants => {
       callback({ restaurants: restaurants })
     })
-  }
+  },
+  getRestaurant: (req, res, callback) => {
+    return Restaurant.findByPk(req.params.id, { include: [Category] })
+      .then(restaurant => {
+        callback({ restaurant: restaurant })
+      })
+  },
 }
 
 module.exports = adminService
